@@ -1,4 +1,7 @@
-package com.jaiswal.memorygame
+package com.jaiswal.memorygame.models
+
+import com.jaiswal.memorygame.models.CurrentState
+import com.jaiswal.memorygame.models.GridCell
 
 class MemoryEngine {
     var firstOpen: GridCell? = null
@@ -24,8 +27,6 @@ class MemoryEngine {
     private fun commitAsCorrectSelection() {
         firstOpen?.finalizeCell()
         secondOpen?.finalizeCell()
-        /*firstOpen?.setCurrentState(CurrentState.DONE)
-        secondOpen?.setCurrentState(CurrentState.DONE)*/
         count += 2
         if (count == 16) {
             //Game won

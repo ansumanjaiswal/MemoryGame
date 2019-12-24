@@ -1,4 +1,4 @@
-package com.jaiswal.memorygame
+package com.jaiswal.memorygame.models
 
 enum class ImageType {
     TYPE_A,

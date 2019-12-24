@@ -1,37 +1,25 @@
-package com.jaiswal.memorygame
+package com.jaiswal.memorygame.models
 
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.widget.Toast
-import android.R.attr.start
-import android.R
 import android.animation.*
-import android.content.Context
-import android.view.ContextMenu
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 
 
 class GridCell(private val url: String,
                private val imageType: ImageType,
-               private val gameEngine: MemoryEngine) {
+               private val engineInteractor: Interactor
+) {
     private var currentState: CurrentState = CurrentState.HIDDEN
     private var view: View? = null
 
-    fun getImageType(): ImageType{
+    fun getImageType(): ImageType {
         return imageType
     }
 
     fun setCurrentState(state: CurrentState){
         this.currentState = state
-    }
-
-    fun onCellClicked(view: View){
-        this.view = view
-        handleAnim(view)
-        gameEngine.cellSelected(this@GridCell)
-
     }
 
     private fun handleAnim(view: View){
@@ -49,7 +37,6 @@ class GridCell(private val url: String,
         currentState = CurrentState.HIDDEN
         val outAnimator = ObjectAnimator.ofFloat(view!!, "rotationY",180f, 90f)
         outAnimator.duration = 300
-        //animation.repeatCount = ObjectAnimator.INFINITE
         outAnimator.repeatCount = 0
         outAnimator.interpolator = AccelerateDecelerateInterpolator()
         outAnimator.start()
@@ -110,5 +97,11 @@ class GridCell(private val url: String,
             override fun onAnimationCancel(animation: Animator?) {
             }
         }
+    }
+
+    fun onViewClicked(view: View) {
+        this.view = view
+        handleAnim(view)
+        engineInteractor.onCellClicked(this@GridCell, view)
     }
 }
