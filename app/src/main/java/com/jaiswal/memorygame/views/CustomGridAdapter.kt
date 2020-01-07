@@ -46,7 +46,6 @@ class CustomGridAdapter(private var cells: List<GridCell>) : BaseAdapter(){
 
     private class GridViewHolder internal constructor(internal val binding: ImageCellBinding) {
         internal val view: View = binding.root
-
     }
 
 }
