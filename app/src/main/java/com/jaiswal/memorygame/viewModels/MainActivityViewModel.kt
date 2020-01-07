@@ -2,6 +2,7 @@ package com.jaiswal.memorygame.viewModels
 
 import android.app.Application
 import android.view.View
+import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.jaiswal.memorygame.ImageRemoteRepository
@@ -11,13 +12,19 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     private val engine = MemoryEngine()
     lateinit var cells: MutableList<GridCell>
+    private val displayWinMessage: ObservableBoolean = ObservableBoolean(false)
 
     override fun onCellClicked(cell: GridCell, view: View) {
         engine.cellSelected(cell)
     }
 
     override fun onGameWon() {
-        resetCells()
+        displayWinMessage.set(true)
+        //resetCells()
+    }
+
+    fun getDisplayWinMessage(): ObservableBoolean{
+        return displayWinMessage
     }
 
     fun getImageRemoteRepository(): MutableLiveData<Any> {
@@ -29,6 +36,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     }
 
     private fun resetCells() {
+        displayWinMessage.set(false)
         for (cell in cells) {
             if (cell.getCurrentState().get() == CurrentState.VISIBLE || cell.getCurrentState().get() == CurrentState.DONE) {
                 cell.setCurrentState(CurrentState.HIDDEN)
