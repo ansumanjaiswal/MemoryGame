@@ -29,6 +29,7 @@ open class MemoryEngine {
         firstOpen?.finalizeCell(gameWon)
         if (count == 16) {
             //Game won
+            count = 0
             gameWon = true
         }
         secondOpen?.finalizeCell(gameWon)
