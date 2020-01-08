@@ -9,38 +9,39 @@ import androidx.databinding.BindingAdapter
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import com.bumptech.glide.Glide
+import com.jaiswal.memorygame.models.data.CellData
 
 
-open class GridCell(private val url: String,
-               private val imageType: ImageType,
-               private val engineInteractor: Interactor,
-               private var currentState: ObservableField<CurrentState> = ObservableField(CurrentState.HIDDEN)
+open class GridCell(
+    private val cell: CellData,
+    private val engineInteractor: Interactor,
+    private var currentState: ObservableField<CurrentState> = ObservableField(CurrentState.HIDDEN)
 ) {
     private var doCloseCell: ObservableBoolean = ObservableBoolean(false)
     private var view: View? = null
 
-    fun getDoCloseCell():ObservableBoolean{
+    fun getDoCloseCell(): ObservableBoolean {
         return doCloseCell
     }
 
-    fun setDoCloseCell(doClose: Boolean){
+    fun setDoCloseCell(doClose: Boolean) {
         doCloseCell.set(doClose)
     }
 
     fun getImageType(): ImageType {
-        return imageType
+        return cell.imageType
     }
 
-    fun getCurrentState(): ObservableField<CurrentState>{
+    fun getCurrentState(): ObservableField<CurrentState> {
         return currentState
     }
 
-    fun setCurrentState(state: CurrentState){
+    fun setCurrentState(state: CurrentState) {
         this.currentState.set(state)
     }
 
-    fun handleAnim(view: View){
-        if(currentState.get() == CurrentState.HIDDEN){
+    fun handleAnim(view: View) {
+        if (currentState.get() == CurrentState.HIDDEN) {
             doCloseCell.set(false)
             val inAnimator = getAnimator(view)
             inAnimator.duration = 300
@@ -53,25 +54,25 @@ open class GridCell(private val url: String,
 
     fun getAnimator(view: View) = ObjectAnimator.ofFloat(view, "rotationY", 0.0f, 90f)
 
-    fun finalizeCell(gameWon: Boolean){
-        //todo handle image change on correct image pair selection
-        /*val image = view?.findViewById(com.jaiswal.memorygame.R.id.os_images) as ImageView
-        image.setImageResource(com.jaiswal.memorygame.R.drawable.baseline_check_circle_outline_black_48)*/
+    fun finalizeCell(gameWon: Boolean) {
+        //handle image change on correct image pair selection
         currentState.set(CurrentState.DONE)
-        if(gameWon) engineInteractor.onGameWon()
+        if (gameWon) engineInteractor.onGameWon()
     }
 
-    private fun getInAnimatorListener(view: View): Animator.AnimatorListener{
+    private fun getInAnimatorListener(view: View): Animator.AnimatorListener {
         val outAnimator = ObjectAnimator.ofFloat(view, "rotationY", 90f, 180f)
         return object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator?) {
             }
+
             override fun onAnimationRepeat(animation: Animator?) {
             }
+
             override fun onAnimationEnd(animation: Animator?) {
                 val image = view.findViewById(com.jaiswal.memorygame.R.id.os_images) as ImageView
                 Glide.with(view.context)
-                    .load(url)
+                    .load(cell.url)
                     .placeholder(com.jaiswal.memorygame.R.drawable.baseline_alarm_black_48)
                     //.error(R.drawable.errorImage)
                     .into(image)
@@ -81,6 +82,7 @@ open class GridCell(private val url: String,
                 outAnimator.start()
                 engineInteractor.onCellClicked(this@GridCell, view)
             }
+
             override fun onAnimationCancel(animation: Animator?) {
             }
         }
@@ -95,15 +97,17 @@ open class GridCell(private val url: String,
 
         @BindingAdapter("closeState")
         @JvmStatic
-        fun cellAction(view: ImageView,
-                       doClose: Boolean) {
-            if(doClose){
+        fun cellAction(
+            view: ImageView,
+            doClose: Boolean
+        ) {
+            if (doClose) {
                 animateCloseCell(view)
             }
         }
 
-        private fun animateCloseCell(view: View){
-            val outAnimator = ObjectAnimator.ofFloat(view, "rotationY",180f, 90f)
+        private fun animateCloseCell(view: View) {
+            val outAnimator = ObjectAnimator.ofFloat(view, "rotationY", 180f, 90f)
             outAnimator.duration = 300
             outAnimator.repeatCount = 0
             outAnimator.interpolator = AccelerateDecelerateInterpolator()
@@ -111,13 +115,15 @@ open class GridCell(private val url: String,
             outAnimator.addListener(getOutAnimatorListener(view))
         }
 
-        private fun getOutAnimatorListener(view: View): Animator.AnimatorListener{
-            val outAnimator = ObjectAnimator.ofFloat(view, "rotationY",90f, 0f)
+        private fun getOutAnimatorListener(view: View): Animator.AnimatorListener {
+            val outAnimator = ObjectAnimator.ofFloat(view, "rotationY", 90f, 0f)
             return object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator?) {
                 }
+
                 override fun onAnimationRepeat(animation: Animator?) {
                 }
+
                 override fun onAnimationEnd(animation: Animator?) {
                     //val image = view.findViewById(com.jaiswal.memorygame.R.id.os_images) as ImageView
                     /*Glide.with(view.context)
@@ -131,6 +137,7 @@ open class GridCell(private val url: String,
                     outAnimator.interpolator = AccelerateDecelerateInterpolator()
                     outAnimator.start()
                 }
+
                 override fun onAnimationCancel(animation: Animator?) {
                 }
             }

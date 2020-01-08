@@ -18,10 +18,15 @@ class MainActivity : AppCompatActivity() {
         val viewModel : MainActivityViewModel = obtainViewModel(MainActivityViewModel::class.java)
 
 
-        val adapter = CustomGridAdapter(viewModel.getGridCells())
-        binding.gVGameView.adapter = adapter
         binding.viewModel = viewModel
-        viewModel.getImageRemoteRepository().observe(this) {
+
+        viewModel.getImageLiveData().observe(this){
+            if(it.images?.size!! > 0){
+                viewModel.setOnLoaded()
+                val adapter = CustomGridAdapter(viewModel.getGridCells())
+                binding.gVGameView.adapter = adapter
+            }
+
             Toast.makeText(this, "On Response", Toast.LENGTH_SHORT).show()
         }
     }
