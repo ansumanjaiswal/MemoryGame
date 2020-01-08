@@ -1,9 +1,9 @@
-package com.jaiswal.memorygame
+package com.jaiswal.memorygame.models
 
-class MemoryEngine {
+open class MemoryEngine {
     var firstOpen: GridCell? = null
     var secondOpen : GridCell? = null
-    var isSingleSelected = false
+    private var isSingleSelected = false
     var count = 0
 
     private fun matchAndEvaluate(){
@@ -17,19 +17,23 @@ class MemoryEngine {
     }
 
     private fun resetCells() {
-        firstOpen?.closeCell()
-        secondOpen?.closeCell()
+        firstOpen?.setCurrentState(CurrentState.HIDDEN)
+        secondOpen?.setCurrentState(CurrentState.HIDDEN)
+        firstOpen?.setDoCloseCell(true)
+        secondOpen?.setDoCloseCell(true)
     }
 
     private fun commitAsCorrectSelection() {
-        firstOpen?.finalizeCell()
-        secondOpen?.finalizeCell()
-        /*firstOpen?.setCurrentState(CurrentState.DONE)
-        secondOpen?.setCurrentState(CurrentState.DONE)*/
         count += 2
+        var gameWon = false
+        firstOpen?.finalizeCell(gameWon)
         if (count == 16) {
             //Game won
+            count = 0
+            gameWon = true
         }
+        secondOpen?.finalizeCell(gameWon)
+
     }
 
     private fun handleUnmatchedPairs() {
@@ -49,4 +53,15 @@ class MemoryEngine {
         }
     }
 
+    fun getIsSingleCellSelected(): Boolean{
+        return isSingleSelected
+    }
+
+    fun getFirstCell(): GridCell?{
+        return firstOpen
+    }
+
+    fun getSecondCell(): GridCell? {
+        return secondOpen
+    }
 }

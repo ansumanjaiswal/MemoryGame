@@ -1,16 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity">
-
-    <GridView
-            android:id="@+id/gl_gameView"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="android.view.View"/>
+        <variable name="viewModel"
+                  type="com.jaiswal.memorygame.viewModels.MainActivityViewModel"/>
+    </data>
+    <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:numColumns="4"
-    />
+            android:layout_height="match_parent"
+            tools:context=".views.MainActivity"
+            android:orientation="vertical">
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{viewModel.loadComplete ? View.GONE : View.VISIBLE}">
+            <TextView
+                    android:id="@+id/tv_welcome_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:typeface="sans"
+                    android:textStyle="bold"
+                    android:textSize="25sp"
+                    android:layout_centerHorizontal="true"
+                    android:padding="30dp"
+                    android:text="Welcome to theMemory game"
+                    android:visibility="@{viewModel.onLoading ? View.GONE : View.VISIBLE}"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_welcome_text"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="20sp"
+                    android:padding="8dp"
+                    android:gravity="center"
+                    android:text="Please press play button to load game and have fun!!"
+                    android:visibility="@{viewModel.onLoading ? View.GONE : View.VISIBLE}"/>
+            <Button
+                    android:id="@+id/btn_play"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Play Game"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="30dp"
+                    android:onClick="@{viewModel::onPlayClicked}"
+            />
+            <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_centerInParent="true"
+                    android:visibility="@{viewModel.onLoading ? View.VISIBLE : View.GONE}"
+            />
 
-</LinearLayout>
+        </RelativeLayout>
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:orientation="vertical"
+                      android:visibility="@{viewModel.loadComplete ? View.VISIBLE : View.GONE}"
+        >
+
+            <GridView
+                    android:id="@+id/gV_gameView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:numColumns="4"
+            />
+
+            <Button
+                    android:id="@+id/btn_reset"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:onClick="@{viewModel::onResetClicked}"
+                    android:text="Reset"/>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:padding="8dp"
+                    android:visibility="@{viewModel.displayWinMessage ? View.VISIBLE : View.GONE}"
+                    android:text="Congratulations! You won. Please reset to play again."
+            />
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>
