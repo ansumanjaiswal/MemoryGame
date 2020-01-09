@@ -12,7 +12,7 @@ import retrofit2.Response
 class ImageRemoteRepository {
     private var apiClient: GetImagesCall? = null
 
-    fun getImages(mutableLiveData: MutableLiveData<ImagesResponse>): MutableLiveData<ImagesResponse>{
+    fun getImages(mutableLiveData: MutableLiveData<ImagesResponse>, error: MutableLiveData<String>): MutableLiveData<ImagesResponse>{
         apiClient = ImageApiClient.client.create(GetImagesCall::class.java)
 
         val call = apiClient?.getImages()
@@ -21,6 +21,7 @@ class ImageRemoteRepository {
         call?.enqueue(object : Callback<ImagesResponse> {
             override fun onFailure(call: Call<ImagesResponse>?, t: Throwable?) {
                 Log.d("Failure", t.toString())
+                error.postValue("FAILURE")
             }
 
             override fun onResponse(call: Call<ImagesResponse>?, response: Response<ImagesResponse>?) {

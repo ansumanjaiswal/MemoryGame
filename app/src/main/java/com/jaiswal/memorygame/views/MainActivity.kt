@@ -25,9 +25,19 @@ class MainActivity : AppCompatActivity() {
                 viewModel.setOnLoaded()
                 val adapter = CustomGridAdapter(viewModel.getGridCells())
                 binding.gVGameView.adapter = adapter
+                Toast.makeText(this, "On Response", Toast.LENGTH_SHORT).show()
+            }else{
+                viewModel.setIsClickable(true)
+                viewModel.setLoadIncComplete()
+                Toast.makeText(this, "On Response Failed", Toast.LENGTH_SHORT).show()
+
             }
 
-            Toast.makeText(this, "On Response", Toast.LENGTH_SHORT).show()
+        }
+        viewModel.failure.observe(this){
+            viewModel.setIsClickable(true)
+            viewModel.setLoadIncComplete()
+            Toast.makeText(this, "On Response Failed", Toast.LENGTH_SHORT).show()
         }
     }
 }

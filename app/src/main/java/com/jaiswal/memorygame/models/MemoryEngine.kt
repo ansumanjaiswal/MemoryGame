@@ -1,8 +1,8 @@
 package com.jaiswal.memorygame.models
 
 open class MemoryEngine {
-    var firstOpen: GridCell? = null
-    var secondOpen : GridCell? = null
+    private var firstOpen: GridCell? = null
+    private var secondOpen : GridCell? = null
     private var isSingleSelected = false
     var count = 0
 

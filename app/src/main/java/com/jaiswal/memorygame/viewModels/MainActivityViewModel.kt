@@ -10,21 +10,31 @@ import com.jaiswal.memorygame.models.*
 import com.jaiswal.memorygame.models.data.CellData
 import com.jaiswal.memorygame.models.response.ImagesResponse
 
-class MainActivityViewModel(application: Application) : AndroidViewModel(application), Interactor {
+open class MainActivityViewModel(application: Application) : AndroidViewModel(application), Interactor {
 
     private val engine = MemoryEngine()
     private lateinit var cells: MutableList<GridCell>
-    private val displayWinMessage: ObservableBoolean = ObservableBoolean(false)
-    private var images: MutableLiveData<ImagesResponse> = MutableLiveData()
-    private var loadComplete: ObservableBoolean = ObservableBoolean(false)
-    private var onLoading: ObservableBoolean = ObservableBoolean(false)
+    private val displayWinMessage: ObservableBoolean = ObservableBoolean(false)//Win message hide show indicator
+    private var images: MutableLiveData<ImagesResponse> = MutableLiveData()//Images data
+    var failure: MutableLiveData<String> = MutableLiveData()//Image api failure indicator
+    private var loadComplete: ObservableBoolean = ObservableBoolean(false)//Load image complete indicator
+    private var onLoading: ObservableBoolean = ObservableBoolean(false)//Progress spinner display hide
+    private var isClickable: ObservableBoolean = ObservableBoolean(true)// Enable disable load image button
 
-    override fun onCellClicked(cell: GridCell, view: View) {
+    override fun onCellClicked(cell: GridCell) {
         engine.cellSelected(cell)
     }
 
     override fun onGameWon() {
         displayWinMessage.set(true)
+    }
+
+    fun getIsClickable(): ObservableBoolean{
+        return isClickable
+    }
+
+    fun setIsClickable(clickable: Boolean){
+        isClickable.set(clickable)
     }
 
     fun getDisplayWinMessage(): ObservableBoolean {
@@ -52,8 +62,13 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         setLoadComplete(true)
     }
 
+    fun setLoadIncComplete(){
+        onLoading.set(false)
+        setLoadComplete(false)
+    }
+
     fun loadImagesFromRepository(){
-        images = ImageRemoteRepository().getImages(images)
+        images = ImageRemoteRepository().getImages(images, failure)
     }
 
     fun onResetClicked(view: View) {
@@ -62,11 +77,15 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun onPlayClicked(view: View){
+        isClickable.set(false)
         onLoading.set(true)
         loadImagesFromRepository()
     }
 
-    private fun resetCells() {
+    /**
+     * Reset cells to initial state to play again
+     */
+    internal fun resetCells() {
         for (cell in cells) {
             if (cell.getCurrentState().get() == CurrentState.VISIBLE || cell.getCurrentState().get() == CurrentState.DONE) {
                 cell.setCurrentState(CurrentState.HIDDEN)
@@ -75,6 +94,9 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
+    /**
+     * Creates cell list from images url returned
+     */
     fun getGridCells(): List<GridCell> {
         cells = ArrayList()
         val imageList = images.value!!.images

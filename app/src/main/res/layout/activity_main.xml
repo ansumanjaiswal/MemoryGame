@@ -45,6 +45,7 @@
                     android:layout_centerInParent="true"
                     android:layout_margin="30dp"
                     android:onClick="@{viewModel::onPlayClicked}"
+                    android:clickable="@{viewModel.isClickable}"
             />
             <ProgressBar
                     android:layout_width="wrap_content"
