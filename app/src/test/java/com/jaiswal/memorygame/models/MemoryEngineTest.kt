@@ -1,6 +1,6 @@
-package com.jaiswal.memorygame
+package com.jaiswal.memorygame.models
 
-import com.jaiswal.memorygame.models.*
+import com.jaiswal.memorygame.models.data.CellData
 import junit.framework.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -16,8 +16,10 @@ class MemoryEngineTest {
     @Before
     fun setup() {
         engine = spy(MemoryEngine())
-        cellOne = spy(GridCell("", ImageType.TYPE_A, interactor))
-        cellTwo = spy(GridCell("", ImageType.TYPE_B, interactor))
+        val dataOne = spy(CellData("", ImageType.TYPE_A))
+        val dataTwo = spy(CellData("", ImageType.TYPE_B))
+        cellOne = spy(GridCell(dataOne, interactor))
+        cellTwo = spy(GridCell(dataTwo, interactor))
     }
 
     @Test
@@ -47,14 +49,12 @@ class MemoryEngineTest {
         assertEquals(cellOne.getCurrentState().get(), CurrentState.HIDDEN)
         assertEquals(cellTwo.getCurrentState().get(), CurrentState.HIDDEN)
         assertNull(engine.getFirstCell())
-        assertNull(engine.getSecondCell())/*
-        verify(cellOne, times(1)).setDoCloseCell(true)
-        verify(cellTwo, times(1)).setDoCloseCell(true)*/
+        assertNull(engine.getSecondCell())
     }
 
     @Test
     fun whenSecondCellSelectedOfSameType_CellsAreSetToDone(){
-        cellTwo = spy(GridCell("", ImageType.TYPE_A, interactor))
+        cellTwo = spy(GridCell(CellData("", ImageType.TYPE_A), interactor))
 
         assertEquals(cellOne.getCurrentState().get(), CurrentState.HIDDEN)
         assertEquals(cellTwo.getCurrentState().get(), CurrentState.HIDDEN)

@@ -2,7 +2,6 @@ package com.jaiswal.memorygame.viewModels
 
 import android.annotation.SuppressLint
 import android.app.Application
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
@@ -35,10 +34,5 @@ class ViewModelFactory private constructor(
                     .also { INSTANCE = it }
             }
 
-
-        @VisibleForTesting
-        fun destroyInstance() {
-            INSTANCE = null
-        }
     }
 }

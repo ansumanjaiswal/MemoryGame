@@ -80,7 +80,7 @@ open class GridCell(
                 outAnimator.repeatCount = 0
                 outAnimator.interpolator = AccelerateDecelerateInterpolator()
                 outAnimator.start()
-                engineInteractor.onCellClicked(this@GridCell, view)
+                engineInteractor.onCellClicked(this@GridCell)
             }
 
             override fun onAnimationCancel(animation: Animator?) {
@@ -88,6 +88,9 @@ open class GridCell(
         }
     }
 
+    /**
+     * On cell clicked
+     */
     fun onViewClicked(view: View) {
         this.view = view
         handleAnim(view)
@@ -95,6 +98,9 @@ open class GridCell(
 
     companion object {
 
+        /**
+         * Lazy load image
+         */
         @BindingAdapter("closeState")
         @JvmStatic
         fun cellAction(
